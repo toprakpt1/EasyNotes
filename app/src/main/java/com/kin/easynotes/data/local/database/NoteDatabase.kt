@@ -4,14 +4,18 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import com.kin.easynotes.core.constant.DatabaseConst
 import com.kin.easynotes.data.local.dao.NoteDao
+import com.kin.easynotes.data.local.dao.TemplateDao
 import com.kin.easynotes.domain.model.Note
+import com.kin.easynotes.domain.model.Template
 
 @Database(
-    entities = [Note::class],
+    entities = [Note::class, Template::class],
     version = DatabaseConst.NOTES_DATABASE_VERSION,
     exportSchema = false
 )
 abstract class NoteDatabase : RoomDatabase() {
 
     abstract fun noteDao(): NoteDao
+
+    abstract fun templateDao(): TemplateDao
 }

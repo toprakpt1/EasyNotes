@@ -177,4 +177,22 @@
     <string name="support_purchase_error">Purchase error</string>
     <string name="support_foss_title">Support FOSS Development</string>
     <string name="support_foss_description">Help us keep this app free and open source. Your support enables continued development and new features.</string>
+    <string name="save">Save</string>
+    <string name="templates">Templates</string>
+    <string name="templates_description">Create • Edit • Delete</string>
+    <string name="template_add">Add Template</string>
+    <string name="template_add_description">Create a reusable note structure</string>
+    <string name="template_edit">Edit Template</string>
+    <string name="template_name">Template Name</string>
+    <string name="template_content">Template Content</string>
+    <string name="template_delete_title">Delete Template</string>
+    <string name="template_delete_description">Are you sure you want to delete \"%1$s\"?</string>
+    <string name="use_date_as_title">Date</string>
+    <string name="use_date_as_title_description">Fill new note titles with date and time</string>
+    <string name="new_note_from_template">From Template</string>
+    <string name="select_template">Select Template</string>
+    <string name="no_templates">No templates yet. Create one in Settings.</string>
+    <string name="save_as_template">Save as Template</string>
+    <string name="template_saved">Template saved</string>
+    <string name="template_name_hint">Template name</string>
 </resources>

@@ -176,4 +176,22 @@
     <string name="font_size_preview_title">Ön İzleme</string>
     <string name="font_size_preview_text">Seçilen yazı tipi boyutunda notlarınız böyle görünecektir.</string>
     <string name="select_accent_color">Vurgu Rengini Seç</string>
+    <string name="save">Kaydet</string>
+    <string name="templates">Şablonlar</string>
+    <string name="templates_description">Ekle • Düzenle • Sil</string>
+    <string name="template_add">Şablon Ekle</string>
+    <string name="template_add_description">Yeniden kullanılabilir not yapısı oluştur</string>
+    <string name="template_edit">Şablonu Düzenle</string>
+    <string name="template_name">Şablon Adı</string>
+    <string name="template_content">Şablon İçeriği</string>
+    <string name="template_delete_title">Şablonu Sil</string>
+    <string name="template_delete_description">\"%1$s\" şablonunu silmek istediğine emin misin?</string>
+    <string name="use_date_as_title">Tarih</string>
+    <string name="use_date_as_title_description">Yeni not başlıklarını tarih ve saat ile doldur</string>
+    <string name="new_note_from_template">Şablonla</string>
+    <string name="select_template">Şablon Seç</string>
+    <string name="no_templates">Henüz şablon yok. Ayarlar\'dan bir tane oluştur.</string>
+    <string name="save_as_template">Şablon Olarak Kaydet</string>
+    <string name="template_saved">Şablon kaydedildi</string>
+    <string name="template_name_hint">Şablon adı</string>
 </resources>

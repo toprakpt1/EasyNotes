@@ -1,6 +1,7 @@
 package com.kin.easynotes.presentation.screens.edit
 
 import android.icu.text.SimpleDateFormat
+import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -18,6 +19,7 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.PushPin
 import androidx.compose.material.icons.rounded.ContentCopy
@@ -27,6 +29,8 @@ import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material.icons.rounded.Numbers
 import androidx.compose.material.icons.rounded.PushPin
 import androidx.compose.material.icons.rounded.RemoveRedEye
+import androidx.compose.material.icons.rounded.SaveAs
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.DropdownMenu
@@ -36,11 +40,18 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -52,6 +63,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -87,21 +99,81 @@ fun EditNoteView(
     settingsViewModel: SettingsViewModel,
     encrypted: Boolean = false,
     isWidget: Boolean = false,
+    templateId: Int? = null,
     onClickBack: () -> Unit
 ) {
     val viewModel: EditViewModel = hiltViewModel<EditViewModel>()
+    val context = LocalContext.current
     viewModel.updateIsEncrypted(encrypted)
     viewModel.setupNoteData(id)
     ObserveLifecycleEvents(viewModel)
+
+    LaunchedEffect(templateId, id) {
+        if (id == 0) {
+            viewModel.applyNewNoteDefaults(
+                templateId = templateId,
+                useDateAsTitle = settingsViewModel.settings.value.useDateAsTitle
+            )
+        }
+    }
 
     val pagerState = rememberPagerState(initialPage = if (id == 0 || isWidget || settingsViewModel.settings.value.editMode) 0 else 1, pageCount = { 2 })
 
 
     val coroutineScope = rememberCoroutineScope()
 
+    if (viewModel.isSaveTemplateDialogVisible.value) {
+        SaveTemplateDialog(
+            initialName = viewModel.noteName.value.text,
+            onSave = { name ->
+                viewModel.saveCurrentNoteAsTemplate(name)
+                viewModel.toggleSaveTemplateDialogVisibility(false)
+                Toast.makeText(context, context.getString(R.string.template_saved), Toast.LENGTH_SHORT).show()
+            },
+            onDismiss = { viewModel.toggleSaveTemplateDialogVisibility(false) }
+        )
+    }
+
     MaterialScaffold(
         topBar = { if (!settingsViewModel.settings.value.minimalisticMode) TopBar(pagerState, coroutineScope,onClickBack, viewModel) },
         content = { PagerContent(pagerState, viewModel, settingsViewModel, onClickBack) }
+    )
+}
+
+@Composable
+private fun SaveTemplateDialog(
+    initialName: String,
+    onSave: (String) -> Unit,
+    onDismiss: () -> Unit
+) {
+    var name by remember { mutableStateOf(initialName) }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(R.string.save_as_template)) },
+        text = {
+            OutlinedTextField(
+                value = name,
+                onValueChange = { name = it },
+                label = { Text(stringResource(R.string.template_name)) },
+                singleLine = true,
+                keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences),
+                modifier = Modifier.fillMaxWidth()
+            )
+        },
+        confirmButton = {
+            TextButton(
+                enabled = name.isNotBlank(),
+                onClick = { onSave(name.trim()) }
+            ) {
+                Text(stringResource(R.string.save))
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(stringResource(R.string.cancel))
+            }
+        }
     )
 }
 
@@ -160,6 +232,16 @@ fun TopBarActions(pagerState: PagerState, onClickBack: () -> Unit, viewModel: Ed
                             viewModel.toggleNoteInfoVisibility(true)
                         }
                     )
+                    if (viewModel.noteDescription.value.text.isNotBlank()) {
+                        DropdownMenuItem(
+                            text = { Text(stringResource(R.string.save_as_template)) },
+                            leadingIcon = { Icon(Icons.Rounded.SaveAs, contentDescription = "Save as Template")},
+                            onClick = {
+                                viewModel.toggleEditMenuVisibility(false)
+                                viewModel.toggleSaveTemplateDialogVisibility(true)
+                            }
+                        )
+                    }
                 }
             }
         }

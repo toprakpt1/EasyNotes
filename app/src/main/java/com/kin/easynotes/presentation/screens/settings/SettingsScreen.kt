@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Cloud
+import androidx.compose.material.icons.rounded.Description
 import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material.icons.rounded.Language
 import androidx.compose.material.icons.rounded.Palette
@@ -123,6 +124,14 @@ fun MainSettings(settingsViewModel: SettingsViewModel, navController: NavControl
                             ),
                             icon = Icons.Rounded.Cloud,
                             onClick = { navController.navigate(NavRoutes.Cloud.route) }
+                        ),
+                        SettingSection(
+                            title = stringResource(id = R.string.templates),
+                            features = listOf(
+                                stringResource(R.string.templates_description)
+                            ),
+                            icon = Icons.Rounded.Description,
+                            onClick = { navController.navigate(NavRoutes.Templates.route) }
                         ),
                         SettingSection(
                             title = stringResource(id = R.string.privacy),

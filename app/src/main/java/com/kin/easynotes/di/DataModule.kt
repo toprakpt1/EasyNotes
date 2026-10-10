@@ -8,6 +8,7 @@ import com.kin.easynotes.data.local.database.NoteDatabaseProvider
 import com.kin.easynotes.data.repository.ImportExportRepository
 import com.kin.easynotes.data.repository.NoteRepositoryImpl
 import com.kin.easynotes.data.repository.SettingsRepositoryImpl
+import com.kin.easynotes.data.repository.TemplateRepositoryImpl
 import com.kin.easynotes.presentation.components.EncryptionHelper
 import dagger.Module
 import dagger.Provides
@@ -57,6 +58,12 @@ object ApplicationModule {
     @Singleton
     fun provideNoteRepository(noteDatabaseProvider: NoteDatabaseProvider): NoteRepositoryImpl {
         return NoteRepositoryImpl(noteDatabaseProvider)
+    }
+
+    @Provides
+    @Singleton
+    fun provideTemplateRepository(noteDatabaseProvider: NoteDatabaseProvider): TemplateRepositoryImpl {
+        return TemplateRepositoryImpl(noteDatabaseProvider)
     }
 
     @Provides

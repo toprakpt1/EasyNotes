@@ -11,6 +11,7 @@ import com.kin.easynotes.presentation.screens.settings.settings.LanguageScreen
 import com.kin.easynotes.presentation.screens.settings.settings.MarkdownScreen
 import com.kin.easynotes.presentation.screens.settings.settings.PrivacyScreen
 import com.kin.easynotes.presentation.screens.settings.settings.SupportScreen
+import com.kin.easynotes.presentation.screens.settings.settings.TemplatesScreen
 import com.kin.easynotes.presentation.screens.settings.settings.ToolsScreen
 
 enum class ActionType {
@@ -21,8 +22,9 @@ enum class ActionType {
 
 sealed class NavRoutes(val route: String) {
     data object Home : NavRoutes("home")
-    data object Edit : NavRoutes("edit/{id}/{encrypted}") {
-        fun createRoute(id: Int, encrypted : Boolean) = "edit/$id/$encrypted"
+    data object Edit : NavRoutes("edit/{id}/{encrypted}?templateId={templateId}") {
+        fun createRoute(id: Int, encrypted : Boolean, templateId: Int? = null) =
+            if (templateId != null) "edit/$id/$encrypted?templateId=$templateId" else "edit/$id/$encrypted"
     }
     data object Terms : NavRoutes("terms")
     data object Settings : NavRoutes("settings")
@@ -32,6 +34,7 @@ sealed class NavRoutes(val route: String) {
     data object Privacy : NavRoutes("settings/privacy")
     data object Markdown : NavRoutes("settings/markdown")
     data object Tools : NavRoutes("settings/tools")
+    data object Templates : NavRoutes("settings/templates")
     data object History : NavRoutes("settings/history")
     data object Widgets : NavRoutes("settings/widgets")
     data object About : NavRoutes("settings/about")
@@ -49,6 +52,7 @@ val settingScreens = mapOf<String, @Composable (settingsViewModel: SettingsViewM
     NavRoutes.Privacy.route to { settings, navController -> PrivacyScreen(navController, settings) },
     NavRoutes.Markdown.route to { settings, navController ->  MarkdownScreen(navController,settings) },
     NavRoutes.Tools.route to { settings, navController -> ToolsScreen(navController,settings) },
+    NavRoutes.Templates.route to { settings, navController -> TemplatesScreen(navController,settings) },
     NavRoutes.About.route to { settings, navController -> AboutScreen(navController,settings) },
     NavRoutes.Support.route to { settings, navController -> SupportScreen(navController,settings) }
 )

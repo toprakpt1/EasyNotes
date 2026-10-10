@@ -7,6 +7,7 @@ import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.kin.easynotes.core.constant.DatabaseConst
 import com.kin.easynotes.data.local.dao.NoteDao
+import com.kin.easynotes.data.local.dao.TemplateDao
 
 class NoteDatabaseProvider(private val application: Application) {
 
@@ -24,7 +25,7 @@ class NoteDatabaseProvider(private val application: Application) {
         return Room.databaseBuilder(application.applicationContext,
             NoteDatabase::class.java,
             DatabaseConst.NOTES_DATABASE_FILE_NAME)
-            .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_2_4)
+            .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_2_4, MIGRATION_4_5)
             .build()
     }
 
@@ -36,6 +37,10 @@ class NoteDatabaseProvider(private val application: Application) {
 
     fun noteDao(): NoteDao {
         return instance().noteDao()
+    }
+
+    fun templateDao(): TemplateDao {
+        return instance().templateDao()
     }
 }
 
@@ -63,5 +68,11 @@ private val MIGRATION_2_4 = object : Migration(2, 4) {
     override fun migrate(db: SupportSQLiteDatabase) {
         db.execSQL("ALTER TABLE `notes-table` ADD COLUMN `pinned` INTEGER NOT NULL DEFAULT 0")
         db.execSQL("ALTER TABLE `notes-table` ADD COLUMN `encrypted` INTEGER NOT NULL DEFAULT 0")
+    }
+}
+
+private val MIGRATION_4_5 = object : Migration(4, 5) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL("CREATE TABLE IF NOT EXISTS `templates-table` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `template-name` TEXT NOT NULL, `template-description` TEXT NOT NULL, `created_at` INTEGER NOT NULL)")
     }
 }

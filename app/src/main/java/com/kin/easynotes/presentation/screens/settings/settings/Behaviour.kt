@@ -7,6 +7,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material.icons.rounded.Image
+import androidx.compose.material.icons.rounded.Schedule
 import androidx.compose.material.icons.rounded.Style
 import androidx.compose.material.icons.rounded.Swipe
 import androidx.compose.material.icons.rounded.Title
@@ -107,6 +108,22 @@ fun MarkdownScreen(navController: NavController, settingsViewModel: SettingsView
                     variable = settingsViewModel.settings.value.disableSwipeInEditMode,
                     switchEnabled = {
                         settingsViewModel.update(settingsViewModel.settings.value.copy(disableSwipeInEditMode = it))
+                    }
+                )
+            }
+
+            item {
+                Spacer(modifier = Modifier.height(18.dp))
+                SettingsBox(
+                    settingsViewModel = settingsViewModel,
+                    title = stringResource(id = R.string.use_date_as_title),
+                    description = stringResource(id = R.string.use_date_as_title_description),
+                    icon = Icons.Rounded.Schedule,
+                    actionType = ActionType.SWITCH,
+                    radius = shapeManager(isBoth = true, radius = settingsViewModel.settings.value.cornerRadius),
+                    variable = settingsViewModel.settings.value.useDateAsTitle,
+                    switchEnabled = {
+                        settingsViewModel.update(settingsViewModel.settings.value.copy(useDateAsTitle = it))
                     }
                 )
             }

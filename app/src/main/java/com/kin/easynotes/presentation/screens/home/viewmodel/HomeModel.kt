@@ -6,22 +6,37 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.kin.easynotes.R
 import com.kin.easynotes.domain.model.Note
+import com.kin.easynotes.domain.model.Template
 import com.kin.easynotes.domain.usecase.NoteUseCase
+import com.kin.easynotes.domain.usecase.TemplateUseCase
 import com.kin.easynotes.presentation.components.DecryptionResult
 import com.kin.easynotes.presentation.components.EncryptionHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.NonCancellable
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     val encryptionHelper: EncryptionHelper,
     val noteUseCase: NoteUseCase,
+    val templateUseCase: TemplateUseCase,
     @ApplicationContext private val context: Context,
 ) : ViewModel() {
     var selectedNotes = mutableStateListOf<Note>()
+
+    private var _templates = mutableStateOf<List<Template>>(emptyList())
+    val templates: State<List<Template>> = _templates
+
+    private var observeTemplatesJob: Job? = null
 
     private var _isDeleteMode = mutableStateOf(false)
     val isDeleteMode: State<Boolean> = _isDeleteMode
@@ -37,6 +52,16 @@ class HomeViewModel @Inject constructor(
 
     init {
         noteUseCase.observe()
+        observeTemplates()
+    }
+
+    private fun observeTemplates() {
+        observeTemplatesJob?.cancel()
+        observeTemplatesJob = viewModelScope.launch {
+            templateUseCase.getAllTemplates().collectLatest { templates ->
+                _templates.value = templates
+            }
+        }
     }
 
     fun toggleIsDeleteMode(enabled: Boolean) {

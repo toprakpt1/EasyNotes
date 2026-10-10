@@ -9,8 +9,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import coil.util.Logger
 import com.kin.easynotes.presentation.screens.settings.settings.lock.LockScreen
 import com.kin.easynotes.presentation.screens.edit.EditNoteView
@@ -36,11 +38,12 @@ fun AppNavHost(settingsModel: SettingsViewModel,navController: NavHostController
         animatedComposable(NavRoutes.Home.route) {
             HomeView(
                 onSettingsClicked = { navController.navigate(NavRoutes.Settings.route) },
-                onNoteClicked = { id, encrypted ->
+                onNoteClicked = { id, encrypted, templateId ->
                     navController.navigate(
                         NavRoutes.Edit.createRoute(
                             id,
-                            encrypted
+                            encrypted,
+                            templateId
                         )
                     )
                 },
@@ -70,14 +73,24 @@ fun AppNavHost(settingsModel: SettingsViewModel,navController: NavHostController
             )
         }
 
-        animatedComposable(NavRoutes.Edit.route) { backStackEntry ->
+        animatedComposable(
+            route = NavRoutes.Edit.route,
+            arguments = listOf(
+                navArgument("templateId") {
+                    type = NavType.IntType
+                    defaultValue = -1
+                }
+            )
+        ) { backStackEntry ->
             val id = backStackEntry.arguments?.getString("id")?.toIntOrNull() ?: 0
             val encrypted = backStackEntry.arguments?.getString("encrypted").toBoolean()
+            val templateId = backStackEntry.arguments?.getInt("templateId") ?: -1
             EditNoteView(
                 settingsViewModel = settingsModel,
                 id = if (noteId == -1) id else noteId,
                 encrypted = encrypted,
-                isWidget = noteId != -1
+                isWidget = noteId != -1,
+                templateId = if (templateId == -1) null else templateId
             ) {
                 if (noteId == -1) {
                     navController.navigateUp()

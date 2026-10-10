@@ -18,6 +18,7 @@ import com.kin.easynotes.domain.usecase.ImportExportUseCase
 import com.kin.easynotes.domain.usecase.ImportResult
 import com.kin.easynotes.domain.usecase.NoteUseCase
 import com.kin.easynotes.domain.usecase.SettingsUseCase
+import com.kin.easynotes.domain.usecase.TemplateUseCase
 import com.kin.easynotes.presentation.components.GalleryObserver
 import com.kin.easynotes.presentation.navigation.NavRoutes
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -36,6 +37,7 @@ class SettingsViewModel @Inject constructor(
     val backup: ImportExportRepository,
     private val settingsUseCase: SettingsUseCase,
     val noteUseCase: NoteUseCase,
+    val templateUseCase: TemplateUseCase,
     private val importExportUseCase: ImportExportUseCase,
 ) : ViewModel() {
     var defaultRoute: String? = null

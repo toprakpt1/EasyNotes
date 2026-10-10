@@ -10,17 +10,22 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kin.easynotes.domain.model.Note
 import com.kin.easynotes.domain.usecase.NoteUseCase
+import com.kin.easynotes.domain.usecase.TemplateUseCase
 import com.kin.easynotes.presentation.components.DecryptionResult
 import com.kin.easynotes.presentation.components.EncryptionHelper
 import com.kin.easynotes.presentation.screens.edit.components.UndoRedoState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
 class EditViewModel @Inject constructor(
     private val noteUseCase: NoteUseCase,
+    private val templateUseCase: TemplateUseCase,
     private val encryption: EncryptionHelper
 ) : ViewModel() {
     private val _noteName = mutableStateOf(TextFieldValue())
@@ -46,6 +51,9 @@ class EditViewModel @Inject constructor(
 
     private val _isEditMenuVisible = mutableStateOf(false)
     val isEditMenuVisible: State<Boolean> get() = _isEditMenuVisible
+
+    private val _isSaveTemplateDialogVisible = mutableStateOf(false)
+    val isSaveTemplateDialogVisible: State<Boolean> get() = _isSaveTemplateDialogVisible
 
     private val _isPinned = mutableStateOf(false)
     val isPinned: State<Boolean> get() = _isPinned
@@ -105,6 +113,48 @@ class EditViewModel @Inject constructor(
         }
     }
 
+    private var newNoteDefaultsApplied = false
+
+    fun applyNewNoteDefaults(templateId: Int?, useDateAsTitle: Boolean) {
+        if (newNoteDefaultsApplied) return
+        newNoteDefaultsApplied = true
+
+        if (useDateAsTitle) {
+            _noteName.value = TextFieldValue(text = formatDateTitle())
+        }
+
+        if (templateId != null) {
+            viewModelScope.launch {
+                templateUseCase.getTemplateById(templateId).collectLatest { template ->
+                    if (template != null) {
+                        updateNoteDescription(TextFieldValue(template.description))
+                        if (!useDateAsTitle && _noteName.value.text.isBlank()) {
+                            updateNoteName(TextFieldValue(template.name))
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    fun saveCurrentNoteAsTemplate(name: String) {
+        val description = noteDescription.value.text
+        if (name.isBlank() || description.isBlank()) return
+        viewModelScope.launch {
+            templateUseCase.addTemplate(
+                com.kin.easynotes.domain.model.Template(
+                    name = name.trim(),
+                    description = description
+                )
+            )
+        }
+    }
+
+    private fun formatDateTitle(): String {
+        val sdf = SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.getDefault())
+        return sdf.format(Date())
+    }
+
     private fun fetchLastNoteAndUpdate() {
         if (noteName.value.text.isNotEmpty() || noteDescription.value.text.isNotBlank()) {
             if (noteId.value == 0) {
@@ -122,6 +172,10 @@ class EditViewModel @Inject constructor(
 
     fun toggleEditMenuVisibility(value: Boolean) {
         _isEditMenuVisible.value = value
+    }
+
+    fun toggleSaveTemplateDialogVisibility(value: Boolean) {
+        _isSaveTemplateDialogVisible.value = value
     }
 
     fun toggleNoteInfoVisibility(value: Boolean) {
