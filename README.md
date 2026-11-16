@@ -1,33 +1,33 @@
-# EasyNotes (Kişisel Fork)
+# EasyNotes (Personal Fork)
 
-Bu depo, [Kin69/EasyNotes](https://github.com/Kin69/EasyNotes) projesinin **kişisel kullanımım için düzenlenmiş** bir fork'udur. Orijinal uygulamanın sade not alma deneyimini temel alır; kendi ihtiyaçlarıma göre bazı ek özellikler ve davranış değişiklikleri içerir.
+This repository is a **personal-use fork** of [Kin69/EasyNotes](https://github.com/Kin69/EasyNotes). It keeps the simple note-taking experience of the original app, with a few custom changes tailored to my own workflow.
 
-> Orijinal proje ve geliştiricisine ait bilgiler, lisans ve katkılar için: [Kin69/EasyNotes](https://github.com/Kin69/EasyNotes)
+> For the original project, credits, and upstream releases, see [Kin69/EasyNotes](https://github.com/Kin69/EasyNotes).
 
-## Bu forkta orijinal uygulamaya göre farklar
+## Differences from the original app
 
-- **Günlük (Journal) modu**
-  - Notlar için ayrı bir **"Günlük"** alanı/klasörü.
-  - **Günde bir günlük:** aynı gün için tek kayıt; varsa açar, yoksa bugünün günlüğünü oluşturur.
-  - Günlük kayıtları **yazıldığı ilk tarihten en son tarihe** doğru (artan) sıralanır.
-  - Günlükler ana not listesinden ayrı tutulur.
-  - Günlük için varsayılan **şablon seçme / ekleme / düzenleme** desteği.
-- **Başlıkta `{date}` yer tutucusu**
-  - Not başlığına `{date}` yazıldığında, not kaydedilirken (otomatik kaydetme dahil) o anki tarihle değiştirilir (`dd.MM.yyyy`).
+- **Journal mode**
+  - A separate **Journal** area/folder for daily notes.
+  - **One entry per day:** opens today's journal if it exists, or creates it if it doesn't.
+  - Journal entries are sorted from **oldest to newest** (by the journal day).
+  - Journal entries are kept separate from the main notes list.
+  - Support for selecting, adding, and editing a **default journal template**.
+- **`{date}` placeholder in note titles**
+  - When a note title contains `{date}`, it is replaced with the current date on save (including auto-save) using the `dd.MM.yyyy` format.
 
-> Not: Bu fork, kişisel kullanım amacıyla sürdürülmektedir; orijinal uygulamayla birebir aynı özellik setini veya dağıtım kanallarını hedeflemez.
+> This fork is maintained for personal use and does not aim to mirror the original app's feature set or distribution channels.
 
-## İndirme
+## Downloads
 
-Bu fork için derlenen APK'lar GitHub Releases üzerinden yayınlanır:
+APKs for this fork are published via GitHub Releases:
 - [Releases](https://github.com/toprakpt1/EasyNotes/releases)
-- [Nightly APK](https://github.com/toprakpt1/EasyNotes/releases/tag/Nightly)
+- [Nightly](https://github.com/toprakpt1/EasyNotes/releases/tag/Nightly)
 
-Orijinal uygulamanın resmi sürümleri ve mağaza bağlantıları için [orijinal depoya](https://github.com/Kin69/EasyNotes) bakın.
+For official builds and store links, refer to the [original repository](https://github.com/Kin69/EasyNotes).
 
-## Lisans
+## License
 
-Bu proje orijinal EasyNotes gibi **GNU General Public License v3.0 (veya sonraki sürümleri)** ile lisanslanmıştır. Ayrıntılar için [LICENSE](LICENSE) dosyasına bakın.
+This project is licensed under the **GNU General Public License v3.0 (or later)**, like the original EasyNotes. See [LICENSE](LICENSE) for details.
 
     Easy Notes
 
