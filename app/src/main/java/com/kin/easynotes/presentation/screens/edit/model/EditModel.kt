@@ -46,6 +46,9 @@ class EditViewModel @Inject constructor(
     private val _noteCreatedTime = mutableLongStateOf(System.currentTimeMillis())
     val noteCreatedTime: State<Long> get() = _noteCreatedTime
 
+    private val _isJournal = mutableStateOf(false)
+    private val _journalDate = mutableStateOf<String?>(null)
+
     private val _isNoteInfoVisible = mutableStateOf(false)
     val isNoteInfoVisible: State<Boolean> get() = _isNoteInfoVisible
 
@@ -62,21 +65,34 @@ class EditViewModel @Inject constructor(
 
     fun saveNote(id: Int) {
         if (noteName.value.text.isNotEmpty() || noteDescription.value.text.isNotBlank()) {
+            val expandedName = expandTitlePlaceholders(noteName.value.text)
+            if (expandedName != noteName.value.text) {
+                _noteName.value = _noteName.value.copy(text = expandedName)
+            }
             viewModelScope.launch {
                 noteUseCase.addNote(
                     Note(
                         id = id,
-                        name = noteName.value.text,
+                        name = expandedName,
                         description = noteDescription.value.text,
                         pinned = isPinned.value,
                         encrypted = isEncrypted.value,
                         createdAt = if (noteCreatedTime.value != 0L) noteCreatedTime.value else System.currentTimeMillis(),
+                        isJournal = _isJournal.value,
+                        journalDate = _journalDate.value,
                     )
                 )
 
                 fetchLastNoteAndUpdate()
             }
         }
+    }
+
+    private fun expandTitlePlaceholders(title: String): String {
+        if (!title.contains("{date}")) return title
+        val sdf = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
+        val date = sdf.format(Date())
+        return title.replace("{date}", date)
     }
 
     fun deleteNote(id: Int) {
@@ -99,6 +115,8 @@ class EditViewModel @Inject constructor(
         updateNoteId(note.id)
         updateNotePin(note.pinned)
         updateIsEncrypted(note.encrypted)
+        _isJournal.value = note.isJournal
+        _journalDate.value = note.journalDate
     }
 
     fun setupNoteData(id : Int = noteId.value) {

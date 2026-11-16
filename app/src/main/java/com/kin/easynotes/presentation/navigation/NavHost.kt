@@ -17,6 +17,7 @@ import coil.util.Logger
 import com.kin.easynotes.presentation.screens.settings.settings.lock.LockScreen
 import com.kin.easynotes.presentation.screens.edit.EditNoteView
 import com.kin.easynotes.presentation.screens.home.HomeView
+import com.kin.easynotes.presentation.screens.journal.JournalScreen
 import com.kin.easynotes.presentation.screens.settings.model.SettingsViewModel
 import com.kin.easynotes.presentation.screens.terms.TermsScreen
 import kotlinx.coroutines.Dispatchers
@@ -47,7 +48,15 @@ fun AppNavHost(settingsModel: SettingsViewModel,navController: NavHostController
                         )
                     )
                 },
+                onJournalClicked = { navController.navigate(NavRoutes.Journal.route) },
                 settingsModel = settingsModel
+            )
+        }
+
+        animatedComposable(NavRoutes.Journal.route) {
+            JournalScreen(
+                navController = navController,
+                settingsViewModel = settingsModel
             )
         }
 

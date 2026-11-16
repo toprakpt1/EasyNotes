@@ -13,6 +13,10 @@ class NoteRepositoryImpl @Inject constructor(
         return provider.noteDao().getAllNotes()
     }
 
+    override fun getJournalNotes(): Flow<List<Note>> {
+        return provider.noteDao().getJournalNotes()
+    }
+
     override suspend fun addNote(note: Note) {
         provider.noteDao().addNote(note)
     }
@@ -27,6 +31,10 @@ class NoteRepositoryImpl @Inject constructor(
 
     override fun getNoteById(id: Int): Flow<Note> {
         return provider.noteDao().getNoteById(id)
+    }
+
+    override suspend fun getJournalByDate(date: String): Note? {
+        return provider.noteDao().getJournalByDate(date)
     }
 
     override fun getLastNoteId(): Long? {

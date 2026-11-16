@@ -22,6 +22,7 @@ enum class ActionType {
 
 sealed class NavRoutes(val route: String) {
     data object Home : NavRoutes("home")
+    data object Journal : NavRoutes("journal")
     data object Edit : NavRoutes("edit/{id}/{encrypted}?templateId={templateId}") {
         fun createRoute(id: Int, encrypted : Boolean, templateId: Int? = null) =
             if (templateId != null) "edit/$id/$encrypted?templateId=$templateId" else "edit/$id/$encrypted"

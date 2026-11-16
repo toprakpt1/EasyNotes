@@ -1,5 +1,7 @@
 package com.kin.easynotes.presentation.screens.home.widgets
 
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -29,34 +31,43 @@ fun NoteFilter(
     viewMode: Boolean = false,
     isDeleteMode: Boolean = false,
     onNoteUpdate: (Note) -> Unit = {},
-    onDeleteNote: (Int) -> Unit = {}
+    onDeleteNote: (Int) -> Unit = {},
+    modifier: Modifier = Modifier,
+    header: (@Composable () -> Unit)? = null
 ) {
     val filteredNotes = filterNotes(notes, searchText)
     if (filteredNotes.isEmpty()) {
-        Placeholder(
-            placeholderIcon = {
-                Icon(
-                    getEmptyIcon(searchText),
-                    contentDescription = "Placeholder icon",
-                    tint = MaterialTheme.colorScheme.outline,
-                    modifier = Modifier.size(64.dp)
-                )
-            },
-            placeholderText = getEmptyText(searchText)
-        )
+        Column(modifier = modifier.fillMaxSize()) {
+            header?.invoke()
+            Placeholder(
+                placeholderIcon = {
+                    Icon(
+                        getEmptyIcon(searchText),
+                        contentDescription = "Placeholder icon",
+                        tint = MaterialTheme.colorScheme.outline,
+                        modifier = Modifier.size(64.dp)
+                    )
+                },
+                placeholderText = getEmptyText(searchText)
+            )
+        }
     } else {
-        NotesGrid(
-            settingsViewModel = settingsViewModel,
-            containerColor = containerColor,
-            onNoteClicked = onNoteClicked,
-            notes = filteredNotes,
-            shape = shape,
-            onNoteUpdate = onNoteUpdate,
-            selectedNotes = selectedNotes,
-            viewMode = viewMode,
-            isDeleteClicked = isDeleteMode,
-            animationFinished = onDeleteNote
-        )
+        Column(modifier = modifier.fillMaxSize()) {
+            header?.invoke()
+            NotesGrid(
+                settingsViewModel = settingsViewModel,
+                containerColor = containerColor,
+                onNoteClicked = onNoteClicked,
+                notes = filteredNotes,
+                shape = shape,
+                onNoteUpdate = onNoteUpdate,
+                selectedNotes = selectedNotes,
+                viewMode = viewMode,
+                isDeleteClicked = isDeleteMode,
+                animationFinished = onDeleteNote,
+                modifier = Modifier.weight(1f, fill = true)
+            )
+        }
     }
 }
 

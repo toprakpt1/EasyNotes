@@ -36,7 +36,8 @@ fun NotesGrid(
     selectedNotes: MutableList<Note>,
     viewMode: Boolean,
     isDeleteClicked: Boolean,
-    animationFinished: (Int) -> Unit
+    animationFinished: (Int) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val (pinnedNotes, otherNotes) = notes.partition { it.pinned }
 
@@ -97,7 +98,7 @@ fun NotesGrid(
                 Note(note, otherNotes)
             }
         },
-        modifier = Modifier.padding(horizontal = 12.dp)
+        modifier = modifier.padding(horizontal = 12.dp)
     )
 }
 

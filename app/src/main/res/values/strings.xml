@@ -195,4 +195,18 @@
     <string name="save_as_template">Save as Template</string>
     <string name="template_saved">Template saved</string>
     <string name="template_name_hint">Template name</string>
+    <string name="journal">Journal</string>
+    <string name="journal_description">Daily notes in one place</string>
+    <string name="todays_journal">Today\'s journal</string>
+    <string name="write_todays_journal">Write today\'s journal</string>
+    <string name="open_todays_journal">Open today\'s journal</string>
+    <string name="no_journal_entries">No journal entries yet</string>
+    <string name="journal_template">Journal template</string>
+    <string name="journal_template_description">Choose • Add • Edit the default template for new journal entries</string>
+    <string name="select_journal_template">Select journal template</string>
+    <string name="no_journal_template">No template selected</string>
+    <string name="edit_journal_template">Edit template</string>
+    <string name="add_journal_template">Add template</string>
+    <string name="clear_journal_template">Clear template</string>
+    <string name="journal_entry_title">%1$s</string>
 </resources>

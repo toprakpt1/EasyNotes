@@ -103,7 +103,7 @@ class HomeViewModel @Inject constructor(
 
     fun getAllNotes(): List<Note> {
         val allNotes = noteUseCase.notes
-        val filteredNotes = allNotes.filter { it.encrypted == isVaultMode.value}
+        val filteredNotes = allNotes.filter { !it.isJournal && it.encrypted == isVaultMode.value }
         when (noteUseCase.decryptionResult) {
             DecryptionResult.LOADING -> { /* Don't do anything */ }
             DecryptionResult.EMPTY -> {

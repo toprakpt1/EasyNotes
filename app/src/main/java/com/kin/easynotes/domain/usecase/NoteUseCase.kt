@@ -89,12 +89,26 @@ class NoteUseCase @Inject constructor(
         return noteRepository.getAllNotes()
     }
 
+    fun getJournalNotes(): Flow<List<Note>> {
+        return noteRepository.getJournalNotes()
+    }
+
     suspend fun addNote(note: Note) {
         val noteToSave = encryptNote(note)
         if (note.id == 0) {
             noteRepository.addNote(noteToSave)
         } else {
             noteRepository.updateNote(noteToSave)
+        }
+    }
+
+    suspend fun getJournalByDate(date: String): Note? {
+        val note = noteRepository.getJournalByDate(date) ?: return null
+        return if (note.encrypted) {
+            val (decryptedNote, status) = decryptNote(note)
+            if (status == DecryptionResult.SUCCESS) decryptedNote else note
+        } else {
+            note
         }
     }
 

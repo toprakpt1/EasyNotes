@@ -22,5 +22,11 @@ data class Note(
     val encrypted: Boolean = false,
 
     @ColumnInfo(name = "created_at")
-    val createdAt: Long = System.currentTimeMillis() // Default value is the current timestamp
+    val createdAt: Long = System.currentTimeMillis(), // Default value is the current timestamp
+
+    @ColumnInfo(name = "is_journal")
+    val isJournal: Boolean = false,
+
+    @ColumnInfo(name = "journal_date")
+    val journalDate: String? = null
 )

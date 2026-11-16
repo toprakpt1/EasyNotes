@@ -18,6 +18,9 @@ interface NoteDao {
     @Query("SELECT * FROM `notes-table`")
     fun getAllNotes(): Flow<List<Note>>
 
+    @Query("SELECT * FROM `notes-table` WHERE is_journal = 1")
+    fun getJournalNotes(): Flow<List<Note>>
+
     @Update
     suspend fun updateNote(note: Note)
 
@@ -26,6 +29,9 @@ interface NoteDao {
 
     @Query("SELECT * FROM `notes-table` WHERE id=:id")
     fun getNoteById(id: Int): Flow<Note>
+
+    @Query("SELECT * FROM `notes-table` WHERE is_journal = 1 AND journal_date = :date LIMIT 1")
+    suspend fun getJournalByDate(date: String): Note?
 
     @Query("SELECT id FROM `notes-table` ORDER BY id DESC LIMIT 1")
     fun getLastNoteId(): Long?

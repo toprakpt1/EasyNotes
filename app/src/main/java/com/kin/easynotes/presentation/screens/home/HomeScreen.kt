@@ -10,18 +10,24 @@ import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Book
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.Description
 import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -76,7 +82,8 @@ fun HomeView (
     viewModel: HomeViewModel = hiltViewModel(),
     settingsModel: SettingsViewModel,
     onSettingsClicked: () -> Unit,
-    onNoteClicked: (Int, Boolean, Int?) -> Unit
+    onNoteClicked: (Int, Boolean, Int?) -> Unit,
+    onJournalClicked: () -> Unit = {}
 ) {
     val context = LocalContext.current
     if (viewModel.isPasswordPromptVisible.value) {
@@ -161,11 +168,43 @@ fun HomeView (
                 viewMode = settingsModel.settings.value.viewMode,
                 searchText = viewModel.searchQuery.value.ifBlank { null },
                 isDeleteMode = viewModel.isDeleteMode.value,
-                onNoteUpdate = { note -> CoroutineScope(Dispatchers.IO).launch {viewModel.noteUseCase.addNote(note) } },
+                onNoteUpdate = { note -> CoroutineScope(Dispatchers.IO).launch { viewModel.noteUseCase.addNote(note) } },
                 onDeleteNote = {
                     viewModel.toggleIsDeleteMode(false)
                     viewModel.noteUseCase.deleteNoteById(it)
                 },
+                header = if (viewModel.searchQuery.value.isBlank() && viewModel.selectedNotes.isEmpty()) {
+                    {
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(bottom = 12.dp)
+                                .clickable { onJournalClicked() },
+                            colors = CardDefaults.cardColors(
+                                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
+                            )
+                        ) {
+                            Row(
+                                modifier = Modifier.padding(16.dp),
+                                verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
+                            ) {
+                                Icon(Icons.Rounded.Book, contentDescription = null)
+                                Spacer(modifier = Modifier.padding(horizontal = 8.dp))
+                                Column {
+                                    Text(
+                                        text = stringResource(R.string.journal),
+                                        style = MaterialTheme.typography.titleMedium
+                                    )
+                                    Text(
+                                        text = stringResource(R.string.journal_description),
+                                        style = MaterialTheme.typography.bodySmall,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    )
+                                }
+                            }
+                        }
+                    }
+                } else null
             )
         }
     )

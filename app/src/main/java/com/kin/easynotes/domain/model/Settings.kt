@@ -31,6 +31,7 @@ data class Settings(
     var disableSwipeInEditMode: Boolean = false,
     var makeSearchBarLonger: Boolean = false,
     var fontSize: Int = 16,
-    var useDateAsTitle: Boolean = false
+    var useDateAsTitle: Boolean = false,
+    var dailyTemplateId: Int = 0
 )
 
