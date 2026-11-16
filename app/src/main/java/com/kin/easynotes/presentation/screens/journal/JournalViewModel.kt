@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -63,11 +64,24 @@ class JournalViewModel @Inject constructor(
 
     suspend fun resolveOrCreateToday(dailyTemplateId: Int): Int {
         val today = todayKey()
-        val existing = noteUseCase.getJournalByDate(today)
-        if (existing != null) return existing.id
+        val description = templateDescription(dailyTemplateId)
 
-        val selectedTemplate = _templates.value.firstOrNull { it.id == dailyTemplateId }
-        val description = selectedTemplate?.description ?: ""
+        val existing = noteUseCase.getJournalByDate(today)
+        if (existing != null) {
+            // Today's entry may have been created before a journal template was
+            // selected. Fill it with the template instead of opening an empty note.
+            if (existing.description.isBlank() && description.isNotBlank()) {
+                noteUseCase.addNote(
+                    existing.copy(
+                        name = existing.name.ifBlank { todayDisplayTitle() },
+                        description = description,
+                        isJournal = true,
+                        journalDate = today
+                    )
+                )
+            }
+            return existing.id
+        }
 
         val note = Note(
             name = todayDisplayTitle(),
@@ -78,5 +92,15 @@ class JournalViewModel @Inject constructor(
         noteUseCase.addNote(note)
         val created = noteUseCase.getJournalByDate(today)
         return created?.id ?: 0
+    }
+
+    private suspend fun templateDescription(dailyTemplateId: Int): String {
+        if (dailyTemplateId == 0) return ""
+        // Read the templates from the database so the content is available even
+        // if the cached list has not been collected yet.
+        return templateUseCase.getAllTemplates().first()
+            .firstOrNull { it.id == dailyTemplateId }
+            ?.description
+            ?: ""
     }
 }
